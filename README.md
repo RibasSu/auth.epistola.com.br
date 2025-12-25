@@ -1337,12 +1337,12 @@ Para contribuir com o projeto:
 
 ### Suporte
 
-- Issues: https://github.com/RibasSu/epistola.com.br-v001/issues
-- Email: seguranca@epistola.com.br
+- Issues: https://github.com/RibasSu/auth.epistola.com.br/issues
+- Email: andre@ribassu.com
 
 ### Licenca
 
-Este projeto esta sob a Licenca MIT. Veja arquivo LICENSE para detalhes.
+Este projeto esta sob a Licenca LIKNCORP EPÍSTOLA RESTRICTED SOURCE LICENSE. Veja arquivo LICENSE para detalhes.
 
 ---
 
