@@ -361,7 +361,7 @@ const HTML_PAGE = `<!DOCTYPE html>
           <input 
             id="email" 
             type="email" 
-            placeholder="maria@muie.com.br"
+            placeholder="maria.eduarda@muie.com.br"
             class="h-9 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 text-sm shadow-sm transition-colors focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
             required
           />
@@ -531,7 +531,7 @@ const REGISTER_PAGE = `<!DOCTYPE html>
           <input 
             id="email" 
             type="email" 
-            placeholder="maria@muie.com.br"
+            placeholder="maria.eduarda@muie.com.br"
             class="h-9 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 text-sm shadow-sm transition-colors focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400"
             required
           />

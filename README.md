@@ -131,6 +131,7 @@ O sistema utiliza Cloudflare D1 (SQLite) com o seguinte esquema:
 ### Tabelas
 
 #### users
+
 Armazena informacoes de usuarios registrados.
 
 ```sql
@@ -156,6 +157,7 @@ Armazena informacoes de usuarios registrados.
 ```
 
 #### epistolaries
+
 Armazena aplicacoes OAuth criadas pelos usuarios.
 
 ```sql
@@ -174,6 +176,7 @@ Armazena aplicacoes OAuth criadas pelos usuarios.
 ```
 
 #### sessions
+
 Gerencia sessoes de usuarios autenticados.
 
 ```sql
@@ -184,6 +187,7 @@ Gerencia sessoes de usuarios autenticados.
 ```
 
 #### auth_codes
+
 Codigos de autorizacao OAuth temporarios.
 
 ```sql
@@ -198,6 +202,7 @@ Codigos de autorizacao OAuth temporarios.
 ```
 
 #### access_tokens
+
 Tokens de acesso OAuth.
 
 ```sql
@@ -210,6 +215,7 @@ Tokens de acesso OAuth.
 ```
 
 #### refresh_tokens
+
 Tokens de atualizacao OAuth.
 
 ```sql
@@ -222,6 +228,7 @@ Tokens de atualizacao OAuth.
 ```
 
 #### two_factor_codes
+
 Codigos de autenticacao de dois fatores via email.
 
 ```sql
@@ -237,6 +244,7 @@ Codigos de autenticacao de dois fatores via email.
 ### Indices
 
 Todos os campos de foreign key possuem indices para otimizar consultas:
+
 - `idx_users_email`, `idx_users_verification_token`, `idx_users_pending_email_token`
 - `idx_epistolaries_user_id`
 - `idx_sessions_user`
@@ -250,19 +258,22 @@ Todos os campos de foreign key possuem indices para otimizar consultas:
 ### Autenticacao Base
 
 #### POST /api/auth/register
+
 Registra novo usuario.
 
 **Request:**
+
 ```json
 {
   "name": "Nome Usuario",
-  "email": "usuario@example.com",
+  "email": "maria.eduarda@muie.com.br",
   "password": "Senha123!",
   "turnstileToken": "token-cloudflare"
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -271,24 +282,28 @@ Registra novo usuario.
 ```
 
 **Validacoes:**
+
 - Email: 5-100 caracteres, formato valido
 - Nome: 2-100 caracteres, apenas letras e espacos validos
 - Senha: 8-128 caracteres, maiuscula, minuscula e numero obrigatorios
 - Turnstile: Verificacao anti-bot obrigatoria
 
 #### POST /api/auth/login
+
 Realiza login do usuario.
 
 **Request:**
+
 ```json
 {
-  "email": "usuario@example.com",
+  "email": "maria.eduarda@muie.com.br",
   "password": "Senha123!",
   "turnstileToken": "token-cloudflare"
 }
 ```
 
 **Response (sucesso sem 2FA):**
+
 ```json
 {
   "success": true,
@@ -297,6 +312,7 @@ Realiza login do usuario.
 ```
 
 **Response (requer 2FA):**
+
 ```json
 {
   "success": true,
@@ -306,9 +322,11 @@ Realiza login do usuario.
 ```
 
 #### POST /api/auth/logout
+
 Encerra sessao do usuario.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -317,14 +335,16 @@ Encerra sessao do usuario.
 ```
 
 #### GET /api/auth/profile
+
 Retorna informacoes do usuario autenticado.
 
 **Response:**
+
 ```json
 {
   "success": true,
   "id": "uuid",
-  "email": "usuario@example.com",
+  "email": "maria.eduarda@muie.com.br",
   "name": "Nome Usuario",
   "email_verified": 1,
   "totp_enabled": 0,
@@ -334,12 +354,15 @@ Retorna informacoes do usuario autenticado.
 ```
 
 #### PUT /api/auth/profile
+
 Atualiza perfil do usuario (deprecado - usar endpoints especificos).
 
 #### GET /api/auth/verify-email/:token
+
 Verifica email do usuario atraves do token enviado por email.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -348,9 +371,11 @@ Verifica email do usuario atraves do token enviado por email.
 ```
 
 #### POST /api/auth/resend-verification
+
 Reenvia email de verificacao.
 
 **Request:**
+
 ```json
 {
   "turnstileToken": "token-cloudflare"
@@ -358,15 +383,18 @@ Reenvia email de verificacao.
 ```
 
 **Limites:**
+
 - Maximo 5 emails por conta
 - Minimo 60 segundos entre envios
 
 ### Autenticacao de Dois Fatores
 
 #### POST /api/auth/2fa/send-login-code
+
 Envia codigo 2FA via email durante login.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -375,9 +403,11 @@ Envia codigo 2FA via email durante login.
 ```
 
 #### POST /api/auth/2fa/verify-login
+
 Verifica codigo 2FA durante login.
 
 **Request:**
+
 ```json
 {
   "code": "123456"
@@ -385,6 +415,7 @@ Verifica codigo 2FA durante login.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -395,9 +426,11 @@ Verifica codigo 2FA durante login.
 ### Gerenciamento de Perfil
 
 #### POST /api/profile/2fa/setup
+
 Gera configuracao para 2FA via aplicativo.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -409,9 +442,11 @@ Gera configuracao para 2FA via aplicativo.
 ```
 
 #### POST /api/profile/2fa/enable
+
 Ativa 2FA via aplicativo.
 
 **Request:**
+
 ```json
 {
   "emailCode": "123456",
@@ -422,9 +457,11 @@ Ativa 2FA via aplicativo.
 ```
 
 #### POST /api/profile/2fa/disable
+
 Desativa 2FA via aplicativo.
 
 **Request:**
+
 ```json
 {
   "emailCode": "123456",
@@ -434,9 +471,11 @@ Desativa 2FA via aplicativo.
 ```
 
 #### POST /api/profile/2fa/send-code
+
 Envia codigo 2FA via email para operacoes de perfil.
 
 **Request:**
+
 ```json
 {
   "type": "enable_2fa" | "disable_2fa" | "change_email",
@@ -445,9 +484,11 @@ Envia codigo 2FA via email para operacoes de perfil.
 ```
 
 #### PUT /api/profile/name
+
 Atualiza nome do usuario.
 
 **Request:**
+
 ```json
 {
   "name": "Novo Nome"
@@ -455,9 +496,11 @@ Atualiza nome do usuario.
 ```
 
 #### PUT /api/profile/password
+
 Altera senha do usuario.
 
 **Request:**
+
 ```json
 {
   "currentPassword": "SenhaAtual123!",
@@ -467,9 +510,11 @@ Altera senha do usuario.
 ```
 
 #### POST /api/profile/email/change
+
 Solicita mudanca de email.
 
 **Request:**
+
 ```json
 {
   "newEmail": "novoemail@example.com",
@@ -479,14 +524,17 @@ Solicita mudanca de email.
 ```
 
 #### GET /confirm-email-change?token=...
+
 Confirma mudanca de email atraves do link enviado.
 
 ### Gerenciamento de Epistolarios
 
 #### POST /api/epistolaries
+
 Cria novo epistolario (aplicacao OAuth).
 
 **Request:**
+
 ```json
 {
   "name": "Meu Epistolario",
@@ -499,6 +547,7 @@ Cria novo epistolario (aplicacao OAuth).
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -513,9 +562,11 @@ Cria novo epistolario (aplicacao OAuth).
 ```
 
 #### GET /api/epistolaries
+
 Lista epistolarios do usuario autenticado.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -531,9 +582,11 @@ Lista epistolarios do usuario autenticado.
 ```
 
 #### GET /api/epistolaries/:id
+
 Retorna detalhes de um epistolario especifico.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -550,9 +603,11 @@ Retorna detalhes de um epistolario especifico.
 ```
 
 #### PUT /api/epistolaries/:id
+
 Atualiza informacoes do epistolario.
 
 **Request:**
+
 ```json
 {
   "name": "Novo Nome",
@@ -562,12 +617,15 @@ Atualiza informacoes do epistolario.
 ```
 
 #### DELETE /api/epistolaries/:id
+
 Remove epistolario (soft delete - marca como inativo).
 
 #### POST /api/epistolaries/:id/regenerate
+
 Gera novo client_secret para o epistolario.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -578,9 +636,11 @@ Gera novo client_secret para o epistolario.
 ### OAuth 2.0
 
 #### GET /oauth/authorize
+
 Inicia fluxo de autorizacao OAuth.
 
 **Query Parameters:**
+
 ```
 client_id: ID do epistolario
 redirect_uri: URI de callback registrada
@@ -589,6 +649,7 @@ state: Estado para CSRF (opcional mas recomendado)
 ```
 
 **Response (usuario nao autenticado):**
+
 ```json
 {
   "login_required": true,
@@ -601,15 +662,18 @@ state: Estado para CSRF (opcional mas recomendado)
 ```
 
 **Response (usuario autenticado):**
+
 ```
 HTTP 302 Redirect
 Location: https://redirect-uri?code=auth-code&state=...
 ```
 
 #### POST /oauth/token
+
 Troca authorization code por access token.
 
 **Request (application/x-www-form-urlencoded ou JSON):**
+
 ```
 grant_type: authorization_code | refresh_token
 code: Authorization code (para authorization_code)
@@ -620,6 +684,7 @@ redirect_uri: URI de callback (apenas para authorization_code)
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "token",
@@ -631,27 +696,32 @@ redirect_uri: URI de callback (apenas para authorization_code)
 ```
 
 #### GET /oauth/userinfo
+
 Retorna informacoes do usuario autenticado via OAuth.
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "sub": "user-id",
-  "email": "usuario@example.com",
+  "email": "maria.eduarda@muie.com.br",
   "name": "Nome Usuario",
   "email_verified": true
 }
 ```
 
 #### POST /oauth/revoke
+
 Revoga access token ou refresh token.
 
 **Request:**
+
 ```json
 {
   "token": "token-to-revoke",
@@ -662,30 +732,39 @@ Revoga access token ou refresh token.
 ### Paginas HTML
 
 #### GET /
+
 Pagina de login.
 
 #### GET /register
+
 Pagina de registro.
 
 #### GET /dashboard
+
 Dashboard do usuario (requer autenticacao).
 
 #### GET /verify-pending
+
 Pagina de verificacao de email pendente.
 
 #### GET /verify-email?token=...
+
 Pagina de confirmacao de email.
 
 #### GET /verify-2fa
+
 Pagina de verificacao 2FA durante login.
 
 #### GET /settings
+
 Pagina de configuracoes do usuario.
 
 #### GET /health
+
 Health check do servico.
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -764,11 +843,13 @@ O sistema implementa OAuth 2.0 Authorization Code Flow para permitir que aplicac
 ### Fluxo Completo
 
 1. **Criar Epistolario**
+
    - Usuario autenticado cria epistolario via `/api/epistolaries`
    - Sistema gera client_id e client_secret
    - Usuario configura redirect_uris permitidas
 
 2. **Autorizacao**
+
    - Epistolario redireciona usuario para `/oauth/authorize`
    - URL inclui client_id, redirect_uri, scope e state
    - Sistema valida client_id e redirect_uri
@@ -777,6 +858,7 @@ O sistema implementa OAuth 2.0 Authorization Code Flow para permitir que aplicac
    - Sistema redireciona para redirect_uri com code
 
 3. **Troca por Token**
+
    - Epistolario envia POST para `/oauth/token`
    - Inclui code, client_id, client_secret, redirect_uri
    - Sistema valida code e credenciais
@@ -784,12 +866,14 @@ O sistema implementa OAuth 2.0 Authorization Code Flow para permitir que aplicac
    - Sistema retorna tokens
 
 4. **Acessar Recursos**
+
    - Epistolario usa access_token em header Authorization
    - Faz GET para `/oauth/userinfo`
    - Sistema valida token
    - Sistema retorna dados do usuario
 
 5. **Renovar Token**
+
    - Quando access_token expira
    - Epistolario envia POST para `/oauth/token`
    - Inclui grant_type=refresh_token, refresh_token, client_id, client_secret
@@ -806,7 +890,8 @@ O sistema implementa OAuth 2.0 Authorization Code Flow para permitir que aplicac
 
 ```javascript
 // 1. Redirecionar para autorizacao
-const authUrl = `https://auth.epistola.com.br/oauth/authorize?` +
+const authUrl =
+  `https://auth.epistola.com.br/oauth/authorize?` +
   `client_id=${clientId}&` +
   `redirect_uri=${encodeURIComponent(redirectUri)}&` +
   `scope=basic profile&` +
@@ -814,24 +899,27 @@ const authUrl = `https://auth.epistola.com.br/oauth/authorize?` +
 window.location.href = authUrl;
 
 // 2. Receber callback e trocar code por token
-const code = new URLSearchParams(window.location.search).get('code');
-const response = await fetch('https://auth.epistola.com.br/oauth/token', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const code = new URLSearchParams(window.location.search).get("code");
+const response = await fetch("https://auth.epistola.com.br/oauth/token", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    grant_type: 'authorization_code',
+    grant_type: "authorization_code",
     code: code,
     client_id: clientId,
     client_secret: clientSecret,
-    redirect_uri: redirectUri
-  })
+    redirect_uri: redirectUri,
+  }),
 });
 const { access_token, refresh_token } = await response.json();
 
 // 3. Buscar informacoes do usuario
-const userResponse = await fetch('https://auth.epistola.com.br/oauth/userinfo', {
-  headers: { 'Authorization': `Bearer ${access_token}` }
-});
+const userResponse = await fetch(
+  "https://auth.epistola.com.br/oauth/userinfo",
+  {
+    headers: { Authorization: `Bearer ${access_token}` },
+  }
+);
 const user = await userResponse.json();
 ```
 
@@ -882,7 +970,7 @@ function generateTOTPSecret(): string {
 async function verifyTOTP(secret: string, token: string): Promise<boolean> {
   const window = 1; // Aceita +-30 segundos
   const time = Math.floor(Date.now() / 1000 / 30);
-  
+
   for (let i = -window; i <= window; i++) {
     const counter = time + i;
     const expectedToken = await generateTOTPToken(secret, counter);
@@ -899,18 +987,21 @@ async function verifyTOTP(secret: string, token: string): Promise<boolean> {
 ### Criptografia e Hashing
 
 #### Senhas
+
 - Algoritmo: SHA-256
 - Funcao: `crypto.subtle.digest`
 - Armazenamento: Base64 encoded
 - Nota: Para producao, considerar bcrypt/argon2 para maior seguranca
 
 #### JWT (JSON Web Tokens)
+
 - Algoritmo: HS256 (HMAC-SHA256)
 - Secret: Variavel de ambiente `JWT_SECRET`
 - Payload: `{ sub: userId, iat: timestamp, exp: timestamp }`
 - Expiracao: Configuravel por tipo de token
 
 #### Tokens Aleatorios
+
 - Fonte: `crypto.getRandomValues`
 - Tamanho: 32 bytes
 - Codificacao: Base64 URL-safe (sem +, /, =)
@@ -920,56 +1011,65 @@ async function verifyTOTP(secret: string, token: string): Promise<boolean> {
 Todas as entradas sao validadas e sanitizadas:
 
 #### Email
+
 - Comprimento: 5-100 caracteres
 - Formato: RFC 5322 simplificado
-- Caracteres: a-z, 0-9, ., -, _, +, @
+- Caracteres: a-z, 0-9, ., -, \_, +, @
 - Normalizacao: lowercase e trim
 - Validacoes: ponto inicial/final, pontos consecutivos, parte local, dominio
 
 #### Nome
+
 - Comprimento: 2-100 caracteres
 - Caracteres: letras (Unicode), espacos, apostrofos, hifens
 - Validacoes: espacos multiplos, posicoes validas de caracteres especiais
 - Sanitizacao: trim e normalizacao de espacos
 
 #### Senha
+
 - Comprimento: 8-128 caracteres
 - Caracteres: A-Z, a-z, 0-9, simbolos permitidos
 - Requisitos obrigatorios:
   - Pelo menos uma letra maiuscula
   - Pelo menos uma letra minuscula
   - Pelo menos um numero
-- Simbolos permitidos: !@#$%^&*()_+-=[]{}|;:,.<>?
+- Simbolos permitidos: !@#$%^&\*()\_+-=[]{}|;:,.<>?
 
 ### Protecao Contra Ataques
 
 #### CSRF (Cross-Site Request Forgery)
+
 - Cookies com flag SameSite=Strict
 - Header X-Requested-With validation
 - State parameter no fluxo OAuth
 
 #### XSS (Cross-Site Scripting)
+
 - Sanitizacao rigorosa de entradas
 - Content Security Policy headers
 - HTML escaping em outputs
 
 #### SQL Injection
+
 - Prepared statements exclusivamente
 - Parametrizacao de todas as queries
 - Sem concatenacao de strings SQL
 
 #### Brute Force
+
 - Cloudflare Turnstile em formularios sensives
 - Rate limiting no edge via Cloudflare
 - Limite de tentativas 2FA
 
 #### Session Hijacking
+
 - Cookies HttpOnly
 - Cookies Secure (HTTPS only)
 - Session expiration
 - Regeneracao de session ID apos login
 
 #### Bot Protection
+
 - Cloudflare Turnstile obrigatorio em:
   - Registro
   - Login
@@ -986,7 +1086,9 @@ async function cleanupUnverifiedUsers(env: Env): Promise<number> {
   const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
   const result = await env.DB.prepare(
     "DELETE FROM users WHERE email_verified = 0 AND created_at < ?"
-  ).bind(oneDayAgo).all();
+  )
+    .bind(oneDayAgo)
+    .all();
   return result.results?.length || 0;
 }
 ```
@@ -1167,6 +1269,7 @@ bun run build.ts --help
 ### Estrutura de Build
 
 O script `build.ts` processa:
+
 - Arquivos HTML em `src/**/*.html`
 - Compila TypeScript
 - Processa TailwindCSS com plugin Bun
@@ -1248,40 +1351,53 @@ Definidos em `package.json`:
 ### Descricao dos Scripts
 
 #### dev
+
 Inicia servidor de desenvolvimento local com hot reload.
+
 - Porta: 8787
 - Database: Local SQLite
 - Variaveis: .dev.vars
 
 #### dev:remote
+
 Inicia desenvolvimento usando recursos de producao.
+
 - Util para testar com dados reais
 - Requer autenticacao Cloudflare
 
 #### start
+
 Alias para `dev`.
 
 #### build
+
 Executa build customizado via build.ts.
+
 - Processa HTML + CSS + JS
 - Minifica codigo
 - Gera sourcemaps
 - Output: dist/
 
 #### deploy
+
 Faz deploy para ambiente de producao.
+
 - Envia codigo para Cloudflare Workers
 - Usa variaveis do wrangler.toml [env.production]
 - URL: https://auth.epistola.com.br
 
 #### db:migrate
+
 Executa schema.sql no banco de producao.
+
 - Cria tabelas se nao existirem
 - Cria indices
 - Idempotente (safe para re-executar)
 
 #### db:local
+
 Executa schema.sql no banco local.
+
 - Para desenvolvimento
 - Cria estrutura local
 
@@ -1304,12 +1420,15 @@ Executa schema.sql no banco local.
 ### Limitacoes Conhecidas
 
 1. **Hashing de Senha**: SHA-256 e menos seguro que bcrypt/argon2
+
    - Recomendacao: Migrar para hashing mais robusto em futuras versoes
 
 2. **Rate Limiting**: Depende de Cloudflare edge
+
    - Recomendacao: Implementar rate limiting adicional na aplicacao
 
 3. **Email Delivery**: Depende de servico externo (Resend)
+
    - Recomendacao: Implementar fallback ou retry logic
 
 4. **Session Storage**: Apenas no banco D1

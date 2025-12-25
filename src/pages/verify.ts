@@ -126,7 +126,7 @@ const RESEND_VERIFICATION_PAGE = `<!DOCTYPE html>
           <input 
             id="email" 
             type="email" 
-            placeholder="maria@muie.com.br"
+            placeholder="maria.eduarda@muie.com.br"
             class="h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
             required
           />
