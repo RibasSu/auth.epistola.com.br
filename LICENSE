@@ -1,0 +1,346 @@
+LIKNCORP EPÍSTOLA RESTRICTED SOURCE LICENSE
+Version 1.1
+
+============================================================
+ENGLISH VERSION (LEGALLY PREVAILING)
+============================================================
+
+Copyright (c) LiknCorp.
+All rights reserved.
+
+This License governs the use, reproduction, modification, and distribution
+of the Epístola software project.
+
+Epístola is a unified system for the creation, management, and integration
+of digital letter collections. Through a robust foundation of APIs and
+infrastructure, Epístola enables individuals and organizations to create
+their own Epistolaries — exclusive worlds of letters with custom business
+rules, narratives, and functionalities.
+
+--------------------------------------------------
+1. DEFINITIONS
+--------------------------------------------------
+
+"Software" means the Epístola source code, object code, APIs, schemas,
+interfaces, documentation, specifications, configuration files, and all
+associated materials made available by the Licensor.
+
+"Licensor" means LiknCorp, the legal entity maintaining and distributing
+the Software.
+
+"You" or "Your" means any individual or legal entity exercising rights
+under this License.
+
+"Epistolary" means any collection, system, world, or environment created
+using the Software for the purpose of creating, managing, integrating, or
+experiencing digital letters.
+
+"Derivative Work" means any work based upon or derived from the Software,
+including but not limited to modifications, extensions, integrations,
+translations, adaptations, or combinations with other software.
+
+"Competitive Offering" means any software, service, platform, API, SDK,
+framework, or hosted solution that is substantially similar to Epístola
+and is intended to replace, compete with, or act as a functional or
+commercial alternative to the Software in the same or a closely related
+market.
+
+"Commercial Use" means use primarily intended for or directed toward
+commercial advantage, monetary compensation, paid services, subscriptions,
+licensing fees, or revenue generation.
+
+--------------------------------------------------
+2. GRANT OF RIGHTS
+--------------------------------------------------
+
+Subject to strict compliance with this License, the Licensor grants You a
+non-exclusive, worldwide, royalty-free, revocable license to:
+
+a) use the Software for internal development, research, educational,
+   experimental, archival, or non-competitive purposes;
+
+b) create, deploy, and operate Epistolaries for personal, artistic,
+   academic, cultural, or internal organizational use, provided that such
+   Epistolaries do not constitute a Competitive Offering;
+
+c) reproduce and distribute verbatim copies of the Software;
+
+d) modify the Software and create Derivative Works;
+
+e) distribute Derivative Works, provided that such distribution is made
+   under this same License, without removal or alteration of its terms.
+
+--------------------------------------------------
+3. RESTRICTIONS ON COMPETITIVE AND COMMERCIAL USE
+--------------------------------------------------
+
+You are expressly prohibited from using the Software or any Derivative Work,
+directly or indirectly, to:
+
+a) develop, market, distribute, sell, license, or otherwise offer a
+   Competitive Offering;
+
+b) provide hosted, managed, SaaS, PaaS, API-as-a-Service, or similar
+   services that compete with Epístola or its core functionalities;
+
+c) use the Software as a core, essential, enabling, or differentiating
+   component of a competing product or service;
+
+d) sublicense, white-label, monetize, or commercialize the Software in a
+   manner that enables or facilitates competition with the Licensor;
+
+e) represent the Software or Derivative Works as an independent,
+   substitute, or competing platform.
+
+Any use intended to establish, support, or enhance a Competitive Offering
+requires prior, explicit, written authorization from LiknCorp.
+
+--------------------------------------------------
+4. TRADEMARK, BRAND, AND PATENT EXCLUSION
+--------------------------------------------------
+
+This License does not grant any rights, express or implied, to:
+
+a) trademarks, service marks, logos, trade dress, trade names, or branding
+   associated with LiknCorp or Epístola;
+
+b) patents, patent claims, patent applications, or patent rights held by
+   the Licensor or its affiliates.
+
+No patent license, express or implied, is granted under this License.
+
+--------------------------------------------------
+5. DATA, CONTENT, AND USER MATERIALS
+--------------------------------------------------
+
+This License does not grant You ownership of, or rights to, any data,
+letters, content, metadata, or materials processed, stored, transmitted,
+or generated through the use of the Software.
+
+You are solely responsible for ensuring that Your use of the Software
+complies with all applicable data protection, privacy, archival,
+intellectual property, and content-related laws and regulations.
+
+--------------------------------------------------
+6. CONTRIBUTIONS
+--------------------------------------------------
+
+Unless explicitly agreed otherwise in writing, any contribution,
+submission, or feedback intentionally provided by You to LiknCorp for
+inclusion in the Software shall be deemed licensed to LiknCorp on a
+perpetual, irrevocable, worldwide, royalty-free basis, with the right to
+use, modify, relicense, commercialize, and distribute such contributions
+without restriction or obligation of compensation.
+
+--------------------------------------------------
+7. ATTRIBUTION AND NOTICES
+--------------------------------------------------
+
+Redistributions of the Software or Derivative Works must retain, in a
+conspicuous manner:
+
+- this License in its entirety;
+- all applicable copyright notices;
+- a clear notice stating that modifications have been made, if applicable.
+
+--------------------------------------------------
+8. DISCLAIMER OF WARRANTIES
+--------------------------------------------------
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, SECURITY, ACCURACY,
+OR ERROR-FREE OPERATION.
+
+--------------------------------------------------
+9. LIMITATION OF LIABILITY
+--------------------------------------------------
+
+IN NO EVENT SHALL LIKNCORP BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING
+FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.
+
+--------------------------------------------------
+10. TERMINATION
+--------------------------------------------------
+
+This License shall terminate automatically upon any breach of its terms.
+Upon termination, You must immediately cease all use, modification, and
+distribution of the Software and destroy all copies in Your possession or
+control.
+
+--------------------------------------------------
+11. GOVERNING LAW AND JURISDICTION
+--------------------------------------------------
+
+This License shall be governed by and construed in accordance with the laws
+of the jurisdiction in which LiknCorp is legally established, excluding
+its conflict of law principles.
+
+--------------------------------------------------
+12. SEVERABILITY
+--------------------------------------------------
+
+If any provision of this License is held to be invalid or unenforceable,
+such provision shall be enforced to the maximum extent permissible, and
+the remaining provisions shall remain in full force and effect.
+
+--------------------------------------------------
+13. ENTIRE AGREEMENT
+--------------------------------------------------
+
+This License constitutes the entire agreement between You and the Licensor
+regarding the Software and supersedes all prior or contemporaneous
+agreements, communications, or understandings.
+
+============================================================
+VERSÃO EM PORTUGUÊS (TRADUÇÃO INTEGRAL – NÃO PREVALECE)
+============================================================
+
+A versão em inglês desta Licença prevalece para todos os fins legais.
+
+--------------------------------------------------
+1. DEFINIÇÕES
+--------------------------------------------------
+
+"Software" significa o código-fonte, código objeto, APIs, esquemas,
+interfaces, documentação, especificações, arquivos de configuração e
+todos os materiais associados do projeto Epístola disponibilizados pelo
+Licenciante.
+
+"Licenciante" significa a LiknCorp, entidade legal mantenedora e
+distribuidora do Software.
+
+"Você" significa qualquer pessoa física ou jurídica que exerça direitos
+sob esta Licença.
+
+"Epistolário" significa qualquer coleção, sistema, mundo ou ambiente
+criado com o uso do Software para criação, gerenciamento, integração ou
+experiência de cartas digitais.
+
+"Trabalho Derivado" significa qualquer obra baseada no Software, incluindo
+modificações, extensões, integrações, traduções, adaptações ou combinações
+com outros softwares.
+
+"Oferta Concorrente" significa qualquer software, serviço, plataforma,
+API, SDK, framework ou solução hospedada substancialmente similar ao
+Epístola e destinada a substituir, concorrer ou atuar como alternativa
+funcional ou comercial ao Software no mesmo ou em mercado correlato.
+
+"Uso Comercial" significa uso destinado principalmente à obtenção de
+vantagem comercial, compensação financeira, serviços pagos, assinaturas,
+licenciamento ou geração de receita.
+
+--------------------------------------------------
+2. CONCESSÃO DE DIREITOS
+--------------------------------------------------
+
+Desde que haja cumprimento estrito desta Licença, a LiknCorp concede a
+Você uma licença não exclusiva, mundial, gratuita e revogável para:
+
+a) utilizar o Software para fins internos, educacionais, experimentais,
+   acadêmicos, arquivísticos ou não concorrenciais;
+
+b) criar, implantar e operar Epistolários para uso pessoal, artístico,
+   cultural, acadêmico ou organizacional interno, desde que não
+   configurem Oferta Concorrente;
+
+c) reproduzir e distribuir cópias integrais do Software;
+
+d) modificar o Software e criar Trabalhos Derivados;
+
+e) distribuir Trabalhos Derivados sob esta mesma Licença, sem remoção ou
+   alteração de seus termos.
+
+--------------------------------------------------
+3. RESTRIÇÕES DE USO COMERCIAL E CONCORRENCIAL
+--------------------------------------------------
+
+É expressamente proibido utilizar o Software ou Trabalhos Derivados para:
+
+a) desenvolver, comercializar, distribuir, licenciar ou ofertar uma
+   Oferta Concorrente;
+
+b) fornecer serviços hospedados, SaaS, PaaS, APIs como serviço ou
+   serviços similares que concorram com o Epístola;
+
+c) utilizar o Software como componente central, essencial ou
+   diferenciador de produto ou serviço concorrente;
+
+d) sublicenciar, rotular como white-label, monetizar ou comercializar o
+   Software de forma que viabilize concorrência com o Licenciante;
+
+e) apresentar o Software como plataforma independente, substituta ou
+   concorrente.
+
+Qualquer uso concorrencial exige autorização prévia, expressa e escrita
+da LiknCorp.
+
+--------------------------------------------------
+4. MARCAS, IDENTIDADE VISUAL E PATENTES
+--------------------------------------------------
+
+Esta Licença não concede quaisquer direitos sobre:
+
+a) marcas registradas, nomes comerciais, logotipos, identidade visual ou
+   branding da LiknCorp ou do Epístola;
+
+b) patentes, pedidos de patente ou direitos de patente do Licenciante.
+
+Nenhuma licença de patente é concedida, expressa ou implicitamente.
+
+--------------------------------------------------
+5. DADOS, CONTEÚDO E MATERIAIS DE USUÁRIO
+--------------------------------------------------
+
+Esta Licença não concede direitos de propriedade sobre dados, cartas,
+conteúdos ou materiais processados, armazenados ou transmitidos por meio
+do Software.
+
+Você é o único responsável pelo cumprimento das leis aplicáveis de
+proteção de dados, privacidade, arquivamento e direitos autorais.
+
+--------------------------------------------------
+6. CONTRIBUIÇÕES
+--------------------------------------------------
+
+Salvo acordo escrito em contrário, quaisquer contribuições fornecidas por
+Você à LiknCorp para inclusão no Software serão licenciadas de forma
+perpétua, irrevogável, mundial e gratuita, permitindo à LiknCorp utilizar,
+relicenciar e comercializar tais contribuições sem compensação.
+
+--------------------------------------------------
+7. ATRIBUIÇÃO E AVISOS
+--------------------------------------------------
+
+Redistribuições devem manter:
+
+- esta Licença integralmente;
+- avisos de direitos autorais;
+- aviso claro de modificações, quando aplicável.
+
+--------------------------------------------------
+8. ISENÇÃO DE GARANTIAS
+--------------------------------------------------
+
+O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIAS DE
+QUALQUER NATUREZA.
+
+--------------------------------------------------
+9. LIMITAÇÃO DE RESPONSABILIDADE
+--------------------------------------------------
+
+EM NENHUMA HIPÓTESE A LIKNCORP SERÁ RESPONSÁVEL POR QUAISQUER DANOS
+DECORRENTES DO USO DO SOFTWARE.
+
+--------------------------------------------------
+10. RESCISÃO
+--------------------------------------------------
+
+O descumprimento desta Licença implica rescisão automática e imediata.
+
+--------------------------------------------------
+FIM DA LICENÇA
+--------------------------------------------------

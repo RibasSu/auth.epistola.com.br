@@ -1,0 +1,45 @@
+name = "epistola-auth"
+main = "src/worker.ts"
+compatibility_date = "2025-11-17"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = true
+persist = true
+head_sampling_rate = 1
+
+[[d1_databases]]
+binding = "DB"
+database_name = "auth-epistola"
+database_id = "29a2c8c3-6525-4b62-b37c-c8411a1f3a0a"
+
+[triggers]
+crons = ["0 */6 * * *"]
+
+[vars]
+SESSION_DURATION = "2592000"
+AUTH_CODE_DURATION = "600"
+ACCESS_TOKEN_DURATION = "3600"
+REFRESH_TOKEN_DURATION = "2592000"
+RESEND_FROM_EMAIL = "Auth Epístola <seguranca@epistola.com.br>"
+TURNSTILE_SITE_KEY = "0x4AAAAAACI7dISm-doQgS3r"
+TURNSTILE_SITE_KEY2 = "0x4AAAAAACJEOZrFT9N8lddD"
+
+[env.development.vars]
+APP_URL = "http://localhost:8787"
+
+[env.production.vars]
+APP_URL = "https://auth.epistola.com.br"
+
+[dev]
+port = 8787
