@@ -517,7 +517,7 @@ Solicita mudanca de email.
 
 ```json
 {
-  "newEmail": "novoemail@example.com",
+  "newEmail": "duda@muie.com.br",
   "emailCode": "123456",
   "turnstileToken": "token-cloudflare"
 }
