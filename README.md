@@ -87,7 +87,7 @@ Cliente -> Cloudflare Worker -> Validacao -> Processamento -> D1 Database
 ## Estrutura do Projeto
 
 ```
-epistola.com.br-v001/
+auth.epistola.com.br/
 ├── src/
 │   ├── api/                    # Endpoints da API
 │   │   ├── auth.ts            # Registro, login, logout, verificacao
@@ -1212,8 +1212,8 @@ wrangler d1 execute auth-epistola --command="SELECT COUNT(*) FROM users;"
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/RibasSu/epistola.com.br-v001.git
-cd epistola.com.br-v001
+git clone https://github.com/RibasSu/auth.epistola.com.br.git
+cd auth.epistola.com.br
 
 # Instalar dependencias
 bun install
