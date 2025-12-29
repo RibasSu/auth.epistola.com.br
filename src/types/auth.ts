@@ -33,6 +33,8 @@ export interface User {
   pending_email?: string;
   pending_email_token?: string;
   pending_email_expires?: number;
+  last_2fa_code_sent?: number;
+  twofa_code_count?: number;
   created_at: number;
   updated_at: number;
 }

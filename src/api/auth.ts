@@ -451,23 +451,56 @@ export async function send2FALoginCode(
     }
 
     const user = await env.DB.prepare(
-      "SELECT id, email, name, two_factor_email_enabled FROM users WHERE id = ?"
+      "SELECT id, email, name, two_factor_email_enabled, last_2fa_code_sent, twofa_code_count FROM users WHERE id = ?"
     )
       .bind(payload.sub)
-      .first<User & { two_factor_email_enabled: number }>();
+      .first<
+        User & {
+          two_factor_email_enabled: number;
+          last_2fa_code_sent?: number;
+          twofa_code_count?: number;
+        }
+      >();
 
     if (!user || user.two_factor_email_enabled !== 1) {
       return errorResponse("2FA por e-mail não está ativado", 400);
     }
 
+    const now = Date.now();
+    const codeCount = user.twofa_code_count || 0;
+    const waitTime = Math.min(
+      Math.pow(2, codeCount) * 60 * 1000,
+      30 * 60 * 1000
+    );
+
+    if (user.last_2fa_code_sent && now - user.last_2fa_code_sent < waitTime) {
+      const remainingSeconds = Math.ceil(
+        (waitTime - (now - user.last_2fa_code_sent)) / 1000
+      );
+      const remainingMinutes = Math.ceil(remainingSeconds / 60);
+      return errorResponse(
+        `Aguarde ${remainingMinutes} minuto${
+          remainingMinutes > 1 ? "s" : ""
+        } antes de solicitar outro código`,
+        429
+      );
+    }
+
     const code = generate2FAEmailCode();
     const expiresAt = Math.floor(Date.now() / 1000) + 600;
     const id = crypto.randomUUID();
+    const newCodeCount = codeCount + 1;
 
     await env.DB.prepare(
       "INSERT INTO two_factor_codes (id, user_id, code, type, expires_at, used, created_at) VALUES (?, ?, ?, 'login', ?, 0, ?)"
     )
       .bind(id, user.id, code, expiresAt, Math.floor(Date.now() / 1000))
+      .run();
+
+    await env.DB.prepare(
+      "UPDATE users SET last_2fa_code_sent = ?, twofa_code_count = ?, updated_at = ? WHERE id = ?"
+    )
+      .bind(now, newCodeCount, now, user.id)
       .run();
 
     await send2FACodeEmail(env, user.email, user.name, code);
@@ -524,7 +557,7 @@ export async function getUserProfile(
     const payload = await verifyJWT(token, env.JWT_SECRET);
 
     const user = await env.DB.prepare(
-      "SELECT id, email, name, avatar_url, email_verified, totp_enabled, created_at FROM users WHERE id = ?"
+      "SELECT id, email, name, avatar_url, email_verified, totp_enabled, two_factor_email_enabled, created_at FROM users WHERE id = ?"
     )
       .bind(payload.sub)
       .first<User>();
@@ -540,6 +573,7 @@ export async function getUserProfile(
       avatar_url: user.avatar_url,
       email_verified: user.email_verified,
       totp_enabled: user.totp_enabled,
+      two_factor_email_enabled: user.two_factor_email_enabled,
       created_at: user.created_at,
     });
   } catch (error) {

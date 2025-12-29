@@ -1,21 +1,33 @@
+PRAGMA foreign_keys = ON;
+
+-- =========================
+-- USERS
+-- =========================
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   name TEXT NOT NULL,
   avatar_url TEXT,
+
   email_verified INTEGER DEFAULT 0,
   email_verification_token TEXT,
   email_verification_expires INTEGER,
   last_verification_email_sent INTEGER,
   verification_email_count INTEGER DEFAULT 0,
+
   totp_secret TEXT,
   totp_enabled INTEGER DEFAULT 0,
   two_factor_email_enabled INTEGER DEFAULT 1,
   backup_codes TEXT,
+
   pending_email TEXT,
   pending_email_token TEXT,
   pending_email_expires INTEGER,
+
+  last_2fa_code_sent INTEGER,
+  twofa_code_count INTEGER DEFAULT 0,
+
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
@@ -24,6 +36,9 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_verification_token ON users(email_verification_token);
 CREATE INDEX idx_users_pending_email_token ON users(pending_email_token);
 
+-- =========================
+-- TWO FACTOR CODES
+-- =========================
 CREATE TABLE IF NOT EXISTS two_factor_codes (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
@@ -38,6 +53,9 @@ CREATE TABLE IF NOT EXISTS two_factor_codes (
 CREATE INDEX idx_two_factor_codes_user ON two_factor_codes(user_id);
 CREATE INDEX idx_two_factor_codes_code ON two_factor_codes(code);
 
+-- =========================
+-- EPISTOLARIES (OAuth Clients)
+-- =========================
 CREATE TABLE IF NOT EXISTS epistolaries (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
@@ -59,6 +77,9 @@ CREATE TABLE IF NOT EXISTS epistolaries (
 CREATE INDEX idx_epistolaries_user_id ON epistolaries(user_id);
 CREATE INDEX idx_epistolaries_client_id ON epistolaries(client_id);
 
+-- =========================
+-- PERMISSIONS
+-- =========================
 CREATE TABLE IF NOT EXISTS permissions (
   id TEXT PRIMARY KEY,
   code TEXT UNIQUE NOT NULL,
@@ -74,6 +95,9 @@ CREATE TABLE IF NOT EXISTS permissions (
 
 CREATE INDEX idx_permissions_code ON permissions(code);
 
+-- =========================
+-- OAUTH SESSIONS
+-- =========================
 CREATE TABLE IF NOT EXISTS oauth_sessions (
   id TEXT PRIMARY KEY,
   epistolary_id TEXT NOT NULL,
@@ -97,6 +121,9 @@ CREATE INDEX idx_oauth_sessions_token ON oauth_sessions(session_token);
 CREATE INDEX idx_oauth_sessions_epistolary ON oauth_sessions(epistolary_id);
 CREATE INDEX idx_oauth_sessions_status ON oauth_sessions(status);
 
+-- =========================
+-- OAUTH USER TOKENS
+-- =========================
 CREATE TABLE IF NOT EXISTS oauth_user_tokens (
   id TEXT PRIMARY KEY,
   token TEXT UNIQUE NOT NULL,
@@ -115,6 +142,9 @@ CREATE INDEX idx_oauth_user_tokens_token ON oauth_user_tokens(token);
 CREATE INDEX idx_oauth_user_tokens_epistolary ON oauth_user_tokens(epistolary_id);
 CREATE INDEX idx_oauth_user_tokens_user ON oauth_user_tokens(user_id);
 
+-- =========================
+-- EPISTOLARY DELETE REQUESTS
+-- =========================
 CREATE TABLE IF NOT EXISTS epistolary_delete_requests (
   token TEXT PRIMARY KEY,
   epistolary_id TEXT NOT NULL,
@@ -125,9 +155,14 @@ CREATE TABLE IF NOT EXISTS epistolary_delete_requests (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_epistolary_delete_requests_epistolary ON epistolary_delete_requests(epistolary_id);
-CREATE INDEX idx_epistolary_delete_requests_expires ON epistolary_delete_requests(expires_at);
+CREATE INDEX idx_epistolary_delete_requests_epistolary
+  ON epistolary_delete_requests(epistolary_id);
+CREATE INDEX idx_epistolary_delete_requests_expires
+  ON epistolary_delete_requests(expires_at);
 
+-- =========================
+-- SESSIONS
+-- =========================
 CREATE TABLE IF NOT EXISTS sessions (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
@@ -138,20 +173,28 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 CREATE INDEX idx_sessions_user ON sessions(user_id);
 
--- Permissões básicas (não críticas)
-INSERT INTO permissions (id, code, name, description, is_critical, requires_verified, requires_official, active, created_at, updated_at) VALUES
-('perm_email', 'email', 'E-mail', 'Acesso ao seu endereço de e-mail', 0, 0, 0, 1, strftime('%s', 'now'), strftime('%s', 'now')),
-('perm_name', 'name', 'Nome', 'Acesso ao seu nome completo', 0, 0, 0, 1, strftime('%s', 'now'), strftime('%s', 'now')),
-('perm_avatar', 'avatar', 'Foto de perfil', 'Acesso à sua foto de perfil', 0, 0, 0, 1, strftime('%s', 'now'), strftime('%s', 'now')),
-('perm_auth', 'auth', 'Autenticação básica', 'Acesso às suas informações básicas de perfil (nome, e-mail e foto)', 0, 0, 0, 1, strftime('%s', 'now'), strftime('%s', 'now'));
+-- =========================
+-- SEED: PERMISSIONS
+-- =========================
 
--- Permissões críticas (requerem verificação)
-INSERT INTO permissions (id, code, name, description, is_critical, requires_verified, requires_official, active, created_at, updated_at) VALUES
-('perm_profile_edit', 'profile:edit', 'Editar perfil', 'Permite ao aplicativo alterar suas informações de perfil (nome e foto)', 1, 1, 0, 1, strftime('%s', 'now'), strftime('%s', 'now')),
-('perm_email_change', 'email:change', 'Alterar e-mail', 'Permite ao aplicativo solicitar alteração do seu endereço de e-mail', 1, 1, 0, 1, strftime('%s', 'now'), strftime('%s', 'now')),
-('perm_password_change', 'password:change', 'Alterar senha', 'Permite ao aplicativo alterar sua senha', 1, 1, 0, 1, strftime('%s', 'now'), strftime('%s', 'now'));
+-- Básicas
+INSERT OR IGNORE INTO permissions
+(id, code, name, description, is_critical, requires_verified, requires_official, active, created_at, updated_at)
+VALUES
+('perm_email', 'email', 'E-mail', 'Acesso ao seu endereço de e-mail', 0, 0, 0, 1, unixepoch(), unixepoch()),
+('perm_name', 'name', 'Nome', 'Acesso ao seu nome completo', 0, 0, 0, 1, unixepoch(), unixepoch()),
+('perm_avatar', 'avatar', 'Foto de perfil', 'Acesso à sua foto de perfil', 0, 0, 0, 1, unixepoch(), unixepoch()),
+('perm_auth', 'auth', 'Autenticação básica', 'Acesso às informações básicas do perfil', 0, 0, 0, 1, unixepoch(), unixepoch());
 
--- Permissões oficiais (apenas para Epistolários oficiais)
-INSERT INTO permissions (id, code, name, description, is_critical, requires_verified, requires_official, active, created_at, updated_at) VALUES
-('perm_account_delete', 'account:delete', 'Excluir conta', 'Permite ao aplicativo excluir permanentemente sua conta', 1, 1, 1, 1, strftime('%s', 'now'), strftime('%s', 'now')),
-('perm_2fa_manage', '2fa:manage', 'Gerenciar 2FA', 'Permite ao aplicativo ativar ou desativar autenticação de dois fatores', 1, 1, 1, 1, strftime('%s', 'now'), strftime('%s', 'now'));
+-- Críticas
+INSERT OR IGNORE INTO permissions
+VALUES
+('perm_profile_edit', 'profile:edit', 'Editar perfil', 'Alterar nome e foto', 1, 1, 0, 1, unixepoch(), unixepoch()),
+('perm_email_change', 'email:change', 'Alterar e-mail', 'Solicitar mudança de e-mail', 1, 1, 0, 1, unixepoch(), unixepoch()),
+('perm_password_change', 'password:change', 'Alterar senha', 'Alterar senha da conta', 1, 1, 0, 1, unixepoch(), unixepoch());
+
+-- Oficiais
+INSERT OR IGNORE INTO permissions
+VALUES
+('perm_account_delete', 'account:delete', 'Excluir conta', 'Excluir permanentemente a conta', 1, 1, 1, 1, unixepoch(), unixepoch()),
+('perm_2fa_manage', '2fa:manage', 'Gerenciar 2FA', 'Ativar ou desativar 2FA', 1, 1, 1, 1, unixepoch(), unixepoch());

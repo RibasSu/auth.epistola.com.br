@@ -522,8 +522,8 @@ export const SETTINGS_PAGE = `<!DOCTYPE html>
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email_code: emailCode,
-            totp_code: appCode
+            emailCode: emailCode,
+            appCode: appCode
           })
         });
         const data = await res.json();

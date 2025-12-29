@@ -30,21 +30,44 @@ export const VERIFY_2FA_PAGE = `<!DOCTYPE html>
   <div class="w-full max-w-md">
     <div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex flex-col gap-6 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
       <div class="text-center">
-        <div class="text-4xl mb-4">🔐</div>
+        <div class="text-4xl mb-4 flex justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4m-2 0h12a2 2 0 012 2v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7a2 2 0 012-2z" />
+        </svg>
+      </div>
         <h1 class="text-2xl font-semibold">Verificação em Duas Etapas</h1>
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Escolha um método para verificar sua identidade</p>
       </div>
 
       <div id="methodSelection" class="grid gap-3">
-        <button id="btnAppMethod" class="hidden p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
-          <div class="font-semibold">📱 Aplicativo Autenticador</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Use o código do seu app</div>
-        </button>
-        <button id="btnEmailMethod" class="hidden p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
-          <div class="font-semibold">📧 Código por Email</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Receba um código no seu e-mail </div>
-        </button>
-      </div>
+
+      <button id="btnAppMethod" class="hidden p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
+        <div class="flex items-center gap-2 font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01" />
+          </svg>
+          Aplicativo Autenticador
+        </div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          Use o código do seu app
+        </div>
+      </button>
+
+      <button id="btnEmailMethod" class="hidden p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
+        <div class="flex items-center gap-2 font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8" />
+          </svg>
+          Código por Email
+        </div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          Receba um código no seu e-mail
+        </div>
+      </button>
+
+    </div>
 
       <form id="verifyForm" class="hidden grid gap-4">
         <div class="text-center mb-2">
