@@ -671,6 +671,37 @@ export default {
     const path = url.pathname;
     const method = request.method;
 
+    async function checkAuthAndRedirect(
+      request: Request
+    ): Promise<Response | null> {
+      const token = await getAuthToken(request);
+      if (!token) {
+        return Response.redirect(new URL("/", request.url).toString(), 302);
+      }
+
+      try {
+        const payload = await verifyJWT(token, env.JWT_SECRET);
+
+        if (payload.requires2fa) {
+          return Response.redirect(
+            new URL("/verify-2fa", request.url).toString(),
+            302
+          );
+        }
+
+        if (payload.verified === false) {
+          return Response.redirect(
+            new URL("/verify-pending", request.url).toString(),
+            302
+          );
+        }
+
+        return null;
+      } catch {
+        return Response.redirect(new URL("/", request.url).toString(), 302);
+      }
+    }
+
     if (method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -716,6 +747,9 @@ export default {
     }
 
     if (path === "/dashboard" && method === "GET") {
+      const redirect = await checkAuthAndRedirect(request);
+      if (redirect) return redirect;
+
       return new Response(DASHBOARD_PAGE, {
         headers: { "Content-Type": "text/html; charset=utf-8" },
       });
@@ -744,6 +778,9 @@ export default {
     }
 
     if (path === "/settings" && method === "GET") {
+      const redirect = await checkAuthAndRedirect(request);
+      if (redirect) return redirect;
+
       const settingsPage = SETTINGS_PAGE.replace(
         /data-sitekey="TURNSTILE_SITE_KEY"/g,
         `data-sitekey="${env.TURNSTILE_SITE_KEY2}"`
