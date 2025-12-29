@@ -9,6 +9,7 @@ import {
   resendVerification,
   verify2FALogin,
   send2FALoginCode,
+  verifyUserPassword,
 } from "./api/auth";
 import {
   createEpistolary,
@@ -28,7 +29,8 @@ import {
   approveOAuthSession,
   cancelOAuthSession,
 } from "./api/oauth";
-import { errorResponse, jsonResponse } from "./lib/auth-utils";
+import { errorResponse, jsonResponse, verifyJWT } from "./lib/auth-utils";
+import { getAuthToken } from "./lib/cookies";
 import { cleanupUnverifiedUsers } from "./lib/cleanup";
 import { VERIFY_2FA_PAGE } from "./pages/verify-2fa";
 import { SETTINGS_PAGE } from "./pages/settings";
@@ -681,6 +683,19 @@ export default {
     }
 
     if (path === "/" && method === "GET") {
+      const token = await getAuthToken(request);
+      if (token) {
+        try {
+          await verifyJWT(token, env.JWT_SECRET);
+          return Response.redirect(
+            new URL("/dashboard", request.url).toString(),
+            302
+          );
+        } catch {
+          // Token inválido, continua para a página de login
+        }
+      }
+
       const htmlPage = HTML_PAGE.replace(
         /data-sitekey="[^"]+"/g,
         `data-sitekey="${env.TURNSTILE_SITE_KEY}"`
@@ -767,6 +782,10 @@ export default {
       return updateUserProfile(request, env);
     }
 
+    if (path === "/api/auth/verify-password" && method === "POST") {
+      return verifyUserPassword(request, env);
+    }
+
     const verifyEmailMatch = path.match(
       /^\/api\/auth\/verify-email\/([^\/]+)$/
     );
@@ -844,7 +863,10 @@ export default {
       return requestDeleteEpistolary(request, env, deleteRequestMatch[1]);
     }
 
-    if (path === "/confirm-delete-epistolary" && method === "GET") {
+    if (
+      path === "/confirm-delete-epistolary" &&
+      (method === "GET" || method === "POST")
+    ) {
       return confirmDeleteEpistolary(request, env);
     }
 

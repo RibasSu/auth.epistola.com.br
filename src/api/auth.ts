@@ -752,3 +752,47 @@ export async function resendVerification(
     return errorResponse("Erro ao reenviar e-mail ", 500);
   }
 }
+
+export async function verifyUserPassword(
+  request: Request,
+  env: Env
+): Promise<Response> {
+  try {
+    const token = await getAuthToken(request);
+    if (!token) {
+      return errorResponse("Token não fornecido", 401);
+    }
+
+    const payload = await verifyJWT(token, env.JWT_SECRET);
+
+    const user = await env.DB.prepare(
+      "SELECT password_hash FROM users WHERE id = ?"
+    )
+      .bind(payload.sub)
+      .first<{ password_hash: string }>();
+
+    if (!user) {
+      return errorResponse("Usuário não encontrado", 404);
+    }
+
+    const { password } = await request.json();
+
+    if (!password) {
+      return errorResponse("Senha é obrigatória", 400);
+    }
+
+    const passwordMatch = await verifyPassword(password, user.password_hash);
+
+    if (!passwordMatch) {
+      return errorResponse("Senha incorreta", 401);
+    }
+
+    return jsonResponse({
+      success: true,
+      valid: true,
+    });
+  } catch (error) {
+    console.error("Verify password error:", error);
+    return errorResponse("Erro ao verificar senha", 500);
+  }
+}

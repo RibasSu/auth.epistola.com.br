@@ -636,6 +636,24 @@ export const DASHBOARD_PAGE = `<!DOCTYPE html>
       }
       
       const password = document.getElementById('deletePassword').value;
+      
+      if (!password || password.trim() === '') {
+        showToast('A senha é obrigatória', 'error');
+        return;
+      }
+      
+      const verifyRes = await fetch('/api/auth/verify-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+        credentials: 'include'
+      });
+      
+      if (!verifyRes.ok) {
+        showToast('Senha incorreta', 'error');
+        return;
+      }
+      
       deletePendingData = { password };
       
       const profileRes = await fetch('/api/auth/profile');

@@ -485,9 +485,7 @@ export async function requestDeleteEpistolary(
       .bind(deleteToken, epistolaryId, user.id, expiresAt)
       .run();
 
-    const deleteUrl = `https://${
-      new URL(request.url).host
-    }/confirm-delete-epistolary?token=${deleteToken}`;
+    const deleteUrl = `${env.APP_URL}/confirm-delete-epistolary?token=${deleteToken}`;
 
     const emailHtml = `
       <!DOCTYPE html>
@@ -614,7 +612,10 @@ export async function confirmDeleteEpistolary(
         .bind(token)
         .run();
 
-      return jsonResponse({ success: true, message: "Epistolário excluído com sucesso" });
+      return jsonResponse({
+        success: true,
+        message: "Epistolário excluído com sucesso",
+      });
     }
 
     const confirmPage = `<!DOCTYPE html>
@@ -642,7 +643,9 @@ export async function confirmDeleteEpistolary(
     <p class="text-gray-600 dark:text-gray-400 mb-6 text-center">Você está prestes a excluir permanentemente o epistolário:</p>
     
     <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
-      <p class="font-semibold text-red-900 dark:text-red-200 text-center">${epistolary?.name || ""}</p>
+      <p class="font-semibold text-red-900 dark:text-red-200 text-center">${
+        epistolary?.name || ""
+      }</p>
     </div>
     
     <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-6">
