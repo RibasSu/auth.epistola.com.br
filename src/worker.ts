@@ -17,12 +17,23 @@ import {
   updateEpistolary,
   deleteEpistolary,
   regenerateSecret,
+  requestDeleteEpistolary,
+  confirmDeleteEpistolary,
 } from "./api/epistolary";
-import { authorize, token, userInfo, revokeToken } from "./api/oauth";
+import {
+  createOAuthSession,
+  getOAuthSessionStatus,
+  getUserData,
+  handleAuthorize,
+  approveOAuthSession,
+  cancelOAuthSession,
+} from "./api/oauth";
 import { errorResponse, jsonResponse } from "./lib/auth-utils";
 import { cleanupUnverifiedUsers } from "./lib/cleanup";
 import { VERIFY_2FA_PAGE } from "./pages/verify-2fa";
 import { SETTINGS_PAGE } from "./pages/settings";
+import { OAUTH_CONSENT_PAGE } from "./pages/oauth-consent";
+import { DASHBOARD_PAGE } from "./pages/dashboard";
 import {
   generate2FASetup,
   enable2FAApp,
@@ -641,189 +652,6 @@ const REGISTER_PAGE = `<!DOCTYPE html>
 </body>
 </html>`;
 
-const DASHBOARD_PAGE = `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Epístola Auth</title>
-  <script>
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class'
-    }
-  </script>
-</head>
-<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4">
-  <button onclick="toggleTheme()" class="fixed top-4 right-4 p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors" aria-label="Alternar tema">
-    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-gray-800 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-    </svg>
-    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-gray-800 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-    </svg>
-  </button>
-  <div class="max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Dashboard</h1>
-      <div class="flex items-center gap-4">
-        <a href="/settings" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Configurações</a>
-        <button onclick="logout()" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Sair</button>
-      </div>
-    </div>
-
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="font-semibold mb-2">Perfil</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400" id="userName">Carregando...</p>
-        <p class="text-sm text-gray-600 dark:text-gray-400" id="userEmail"></p>
-      </div>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold">Meus Epistolários</h2>
-        <button onclick="showCreateModal()" class="inline-flex items-center justify-center h-9 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600">
-          Criar Epistolário
-        </button>
-      </div>
-      <div id="epistolariesList" class="grid gap-3"></div>
-    </div>
-  </div>
-
-  <div id="createModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 max-w-md w-full">
-      <h3 class="text-lg font-semibold mb-4">Criar Epistolário</h3>
-      <form id="createForm" class="grid gap-4">
-        <input id="epName" type="text" placeholder="Nome" class="h-9 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 text-sm" required />
-        <input id="epRedirect" type="url" placeholder="URL de Callback" class="h-9 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 text-sm" required />
-        <textarea id="epDesc" placeholder="Descrição (opcional)" class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm" rows="3"></textarea>
-        <div class="flex gap-2">
-          <button type="submit" class="flex-1 h-9 bg-blue-600 dark:bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600">Criar</button>
-          <button type="button" onclick="hideCreateModal()" class="flex-1 h-9 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    function toggleTheme() {
-      if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
-      } else {
-        document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
-      }
-      updateThemeIcon();
-    }
-
-    function updateThemeIcon() {
-      const darkIcon = document.getElementById('theme-toggle-dark-icon');
-      const lightIcon = document.getElementById('theme-toggle-light-icon');
-      if (document.documentElement.classList.contains('dark')) {
-        darkIcon.classList.add('hidden');
-        lightIcon.classList.remove('hidden');
-      } else {
-        darkIcon.classList.remove('hidden');
-        lightIcon.classList.add('hidden');
-      }
-    }
-
-    updateThemeIcon();
-
-    fetch('/api/auth/profile')
-      .then(res => {
-        if (!res.ok) {
-          window.location.href = '/';
-          return null;
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (!data || !data.email) {
-          window.location.href = '/';
-        } else if (data.email_verified === 0) {
-          window.location.href = '/verify-pending';
-        }
-      })
-      .catch(() => {
-        window.location.href = '/';
-      });
-
-    async function loadProfile() {
-      const res = await fetch('/api/auth/profile');
-      const data = await res.json();
-      if (res.ok && data.name) {
-        document.getElementById('userName').textContent = data.name;
-        document.getElementById('userEmail').textContent = data.email;
-      }
-    }
-
-    async function loadEpistolaries() {
-      const res = await fetch('/api/epistolaries');
-      const data = await res.json();
-      const list = document.getElementById('epistolariesList');
-      if (data.success && data.epistolaries.length > 0) {
-        list.innerHTML = data.epistolaries.map(ep => \`
-          <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <h4 class="font-medium">\${ep.name}</h4>
-            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Client ID: \${ep.id}</p>
-          </div>
-        \`).join('');
-      } else {
-        list.innerHTML = '<p class="text-sm text-gray-600 dark:text-gray-400">Nenhum epistolário criado</p>';
-      }
-    }
-
-    function showCreateModal() {
-      document.getElementById('createModal').classList.remove('hidden');
-    }
-
-    function hideCreateModal() {
-      document.getElementById('createModal').classList.add('hidden');
-    }
-
-    document.getElementById('createForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const res = await fetch('/api/epistolaries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: document.getElementById('epName').value,
-          redirect_uris: [document.getElementById('epRedirect').value],
-          description: document.getElementById('epDesc').value
-        }),
-        credentials: 'include'
-      });
-      if (res.ok) {
-        hideCreateModal();
-        loadEpistolaries();
-        document.getElementById('createForm').reset();
-      }
-    });
-
-    async function logout() {
-      await fetch('/api/auth/logout', { 
-        method: 'POST',
-        credentials: 'include'
-      });
-      window.location.href = '/';
-    }
-
-    loadProfile();
-    loadEpistolaries();
-  </script>
-</body>
-</html>`;
-
 export default {
   async scheduled(event: any, env: Env, ctx: any): Promise<void> {
     ctx.waitUntil(
@@ -1009,23 +837,47 @@ export default {
       return regenerateSecret(request, env, regenerateMatch[1]);
     }
 
-    if (
-      path === "/oauth/authorize" &&
-      (method === "GET" || method === "POST")
-    ) {
-      return authorize(request, env);
+    const deleteRequestMatch = path.match(
+      /^\/api\/epistolaries\/([^\/]+)\/request-delete$/
+    );
+    if (deleteRequestMatch && deleteRequestMatch[1] && method === "POST") {
+      return requestDeleteEpistolary(request, env, deleteRequestMatch[1]);
     }
 
-    if (path === "/oauth/token" && method === "POST") {
-      return token(request, env);
+    if (path === "/confirm-delete-epistolary" && method === "GET") {
+      return confirmDeleteEpistolary(request, env);
     }
 
-    if (path === "/oauth/userinfo" && method === "GET") {
-      return userInfo(request, env);
+    if (path === "/oauth/authorize" && method === "GET") {
+      return handleAuthorize(request, env);
     }
 
-    if (path === "/oauth/revoke" && method === "POST") {
-      return revokeToken(request, env);
+    if (path === "/oauth/authorize/page" && method === "GET") {
+      return new Response(OAUTH_CONSENT_PAGE, {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      });
+    }
+
+    if (path === "/api/oauth/session" && method === "POST") {
+      return createOAuthSession(request, env);
+    }
+
+    const sessionStatusMatch = path.match(/^\/api\/oauth\/session\/([^\/]+)$/);
+    if (sessionStatusMatch && sessionStatusMatch[1] && method === "GET") {
+      return getOAuthSessionStatus(request, env, sessionStatusMatch[1]);
+    }
+
+    const userDataMatch = path.match(/^\/api\/oauth\/user\/([^\/]+)$/);
+    if (userDataMatch && userDataMatch[1] && method === "GET") {
+      return getUserData(request, env, userDataMatch[1]);
+    }
+
+    if (path === "/api/oauth/approve" && method === "POST") {
+      return approveOAuthSession(request, env);
+    }
+
+    if (path === "/api/oauth/cancel" && method === "POST") {
+      return cancelOAuthSession(request, env);
     }
 
     return errorResponse("Endpoint não encontrado", 404);
